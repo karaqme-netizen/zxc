@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Upgrader</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<style>
+:root{
+  --bg:#0b0b0d; --panel:#131316; --line:#232328;
+  --text:#f2f2f5; --muted:#787882; --accent:#8a9cff;
+  --ok:#f5c518; --no:#1a1a1e;
+  --win:#22c55e; --lose:#ef4444;
+  --pointer:#ffffff;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;min-height:100vh;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+button{font:inherit;color:inherit;cursor:pointer;border:none;background:none}
+input{font:inherit;color:inherit}
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
+input[type=number]{-moz-appearance:textfield;appearance:textfield}
+
+.loader{position:fixed;inset:0;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999;transition:opacity .5s}
+.loader.hide{opacity:0;pointer-events:none}
+.loader-logo{width:64px;height:64px;border-radius:16px;background:var(--accent);display:grid;place-items:center;color:#0b0b0d;margin-bottom:20px;animation:logoPulse 1.6s ease-in-out infinite}
+@keyframes logoPulse{0%,100%{transform:scale(1);box-shadow:0 0 0 0 rgba(138,156,255,.4)}50%{transform:scale(1.08);box-shadow:0 0 0 20px rgba(138,156,255,0)}}
+.loader-title{font-size:20px;font-weight:700;letter-spacing:-.5px;margin-bottom:6px}
+.loader-title .dot{color:var(--muted);font-weight:400}
+.loader-sub{font-size:12px;color:var(--muted);margin-bottom:24px}
+.loader-bar{width:160px;height:3px;background:#1a1a1e;border-radius:3px;overflow:hidden}
+.loader-bar i{display:block;height:100%;width:30%;background:var(--accent);border-radius:3px;animation:barMove 1.4s ease-in-out infinite}
+@keyframes barMove{0%{transform:translateX(-100%)}100%{transform:translateX(500%)}}
+
+.toast{position:fixed;top:0;left:0;right:0;z-index:200;transform:translateY(-100%);transition:transform .4s cubic-bezier(.2,.9,.3,1.2)}
+.toast.show{transform:translateY(0)}
+.toast-inner{background:linear-gradient(135deg,rgba(19,19,22,.98),rgba(35,35,40,.98));backdrop-filter:blur(20px);border-bottom:1px solid var(--line);padding:16px 20px;display:flex;align-items:center;gap:14px;box-shadow:0 8px 32px rgba(0,0,0,.6);position:relative}
+.toast-ic{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;flex-shrink:0;font-size:18px;position:relative;overflow:hidden}
+.toast-ic::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,.1),transparent);pointer-events:none}
+.toast-ic.pending{background:linear-gradient(135deg,rgba(245,197,24,.2),rgba(245,197,24,.05));color:var(--ok);box-shadow:0 0 20px rgba(245,197,24,.2)}
+.toast-ic.done{background:linear-gradient(135deg,rgba(34,197,94,.2),rgba(34,197,94,.05));color:var(--win);box-shadow:0 0 20px rgba(34,197,94,.2)}
+.toast-ic.fail{background:linear-gradient(135deg,rgba(239,68,68,.2),rgba(239,68,68,.05));color:var(--lose);box-shadow:0 0 20px rgba(239,68,68,.2)}
+.toast-tx{flex:1}
+.toast-tx b{display:block;font-size:15px;font-weight:700;margin-bottom:3px;letter-spacing:-.3px}
+.toast-tx span{color:var(--muted);font-size:12px;line-height:1.4}
+.toast-progress{position:absolute;bottom:0;left:0;height:2px;background:var(--accent);border-radius:2px;animation:progressShrink linear forwards}
+@keyframes progressShrink{from{width:100%}to{width:0%}}
+
+.wrap{width:100%;padding:0 16px 30px}
+
+header{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px 0;border-bottom:1px solid var(--line);margin-bottom:20px}
+.brand{display:flex;align-items:center;gap:8px;font-size:18px;font-weight:700;letter-spacing:-.5px}
+.brand .dot{color:var(--muted);font-weight:400}
+.mark{width:32px;height:32px;border-radius:8px;background:var(--accent);display:grid;place-items:center;color:#0b0b0d}
+
+.wallet{position:relative}
+.balance{display:flex;align-items:center;gap:6px;background:var(--panel);border:1px solid var(--line);padding:8px 12px;border-radius:10px;font-size:13px;color:var(--muted);transition:.15s}
+.balance:active{background:#181820;border-color:var(--accent)}
+.balance svg{color:var(--ok);flex-shrink:0}
+.balance b{color:var(--text);font-weight:600}
+.balance .chev{color:var(--muted);transition:transform .2s}
+.balance.open .chev{transform:rotate(180deg)}
+
+.popover{position:absolute;top:calc(100% + 8px);right:0;width:200px;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px;z-index:60;display:none;animation:popIn .2s}
+.popover.open{display:block}
+.pop-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:12px}
+.pop-head .lbl{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1px}
+.pop-head .val{font-size:16px;font-weight:700}
+.pop-btn{width:100%;padding:10px;background:var(--accent);color:#0b0b0d;border-radius:8px;font-weight:650;font-size:12px;transition:.15s}
+.pop-btn:active{filter:brightness(1.12)}
+@keyframes popIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
+
+.wheel-section{display:flex;flex-direction:column;align-items:center;gap:16px;padding:20px 0}
+.wheel-stage{position:relative;width:280px;height:280px;max-width:100%}
+
+.wheel{position:absolute;inset:0;border-radius:50%}
+.wheel::after{content:'';position:absolute;inset:0;border-radius:50%;
+  background:conic-gradient(
+    from 0deg,
+    var(--no) 0deg var(--dark-half,18deg),
+    var(--ok) var(--dark-half,18deg) calc(360deg - var(--dark-half,18deg)),
+    var(--no) calc(360deg - var(--dark-half,18deg)) 360deg
+  );
+  -webkit-mask:radial-gradient(circle, transparent 62%, #000 63%);
+          mask:radial-gradient(circle, transparent 62%, #000 63%);
+}
+
+.wheel-center{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  width:110px;height:110px;border-radius:50%;background:var(--panel);
+  border:3px solid #1f1f27;display:grid;place-items:center;text-align:center;
+  box-shadow:inset 0 0 20px rgba(0,0,0,.4);z-index:2;
+  transition:border-color .3s, box-shadow .3s}
+.wheel-center.win{border-color:var(--win);box-shadow:inset 0 0 20px rgba(34,197,94,.22)}
+.wheel-center.lose{border-color:var(--lose);box-shadow:inset 0 0 20px rgba(239,68,68,.22)}
+
+.center-view{display:flex;flex-direction:column;align-items:center;gap:2px}
+.wheel-pct{font-size:28px;font-weight:700;letter-spacing:-1px;line-height:1}
+.wheel-pct small{font-size:12px;color:var(--muted);font-weight:500;margin-left:2px}
+.wheel-sub{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-top:4px}
+
+.result-view{display:none;flex-direction:column;align-items:center;gap:4px;animation:popIn .35s}
+.result-view.show{display:flex}
+.result-amount{font-size:20px;font-weight:700;letter-spacing:-.5px}
+.result-amount.win{color:var(--win)}
+.result-amount.lose{color:var(--lose)}
+.result-label{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-top:2px}
+
+.pointer-wrap{position:absolute;inset:0;z-index:3;will-change:transform}
+.pointer{position:absolute;top:6px;left:50%;transform:translateX(-50%);
+  width:0;height:0;border-left:12px solid transparent;border-right:12px solid transparent;
+  border-top:20px solid var(--pointer);
+  filter:drop-shadow(0 0 12px rgba(255,255,255,.6)) drop-shadow(0 4px 8px rgba(0,0,0,.6))}
+.pointer::after{content:'';position:absolute;top:-24px;left:-6px;width:12px;height:12px;
+  background:var(--pointer);border-radius:50%;box-shadow:0 0 14px rgba(255,255,255,.7)}
+
+.go{width:100%;padding:15px;border-radius:12px;background:var(--accent);color:#0b0b0d;font-weight:650;font-size:15px;transition:.2s}
+.go:active:not(:disabled){filter:brightness(1.12)}
+.go:disabled{background:#22222a;color:#55555f;cursor:not-allowed}
+.hint{font-size:11px;color:var(--muted);text-align:center;min-height:16px;line-height:1.5}
+
+.bottom-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:10px}
+
+.section{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px}
+.section-title{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:12px}
+
+.field-input{width:100%;background:#17171b;border:1px solid var(--line);border-radius:8px;padding:12px;font-size:15px;color:var(--text)}
+.field-input:focus{outline:none;border-color:var(--accent)}
+
+.current-box{background:#17171b;border:1px solid var(--line);border-radius:10px;padding:12px;margin-top:12px}
+.current-box .label{font-size:10px;color:var(--muted);margin-bottom:4px}
+.current-box .value{font-size:18px;font-weight:700;color:var(--ok)}
+
+.quick{width:100%;display:flex;align-items:center;gap:12px;padding:12px;background:#17171b;border:1px solid var(--line);border-radius:10px;transition:.18s;margin-top:10px;text-align:left}
+.quick:active{border-color:var(--accent)}
+.quick .q-ic{width:28px;height:28px;border-radius:7px;background:#22222a;display:grid;place-items:center;flex-shrink:0;color:var(--muted);transition:.2s}
+.quick .q-tx{flex:1}
+.quick .q-title{font-size:13px;font-weight:600;margin-bottom:2px}
+.quick .q-sub{font-size:10px;color:var(--muted)}
+.quick .q-state{font-size:10px;font-weight:700;letter-spacing:.8px;padding:4px 8px;border-radius:6px;background:#22222a;color:var(--muted);transition:.2s}
+.quick.on{border-color:var(--ok);background:rgba(245,197,24,.07)}
+.quick.on .q-ic{background:var(--ok);color:#0b0b0d}
+.quick.on .q-state{background:var(--ok);color:#0b0b0d}
+
+.multipliers{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-top:12px}
+.mult{padding:10px 4px;background:#17171b;border:1px solid var(--line);border-radius:8px;font-size:12px;font-weight:600;color:var(--text);transition:.15s}
+.mult:active{border-color:var(--accent);background:#1b1e30}
+.mult:disabled{opacity:.4;cursor:not-allowed}
+
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.8);backdrop-filter:blur(6px);display:none;align-items:center;justify-content:center;padding:20px;z-index:100}
+.overlay.open{display:flex}
+.dialog{width:100%;max-width:380px;background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:24px;animation:popUp .28s}
+@keyframes popUp{from{transform:scale(.92);opacity:0}to{transform:scale(1);opacity:1}}
+.d-head{display:flex;align-items:center;gap:10px;margin-bottom:16px}
+.d-ic{width:36px;height:36px;border-radius:10px;background:rgba(245,197,24,.14);display:grid;place-items:center;color:var(--ok);flex-shrink:0}
+.d-title{font-size:16px;font-weight:700}
+.d-sub{font-size:11px;color:var(--muted);margin-top:2px}
+.d-body{font-size:12px;color:var(--muted);line-height:1.6;margin-bottom:14px}
+.d-amounts{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:12px}
+.d-amt{padding:10px;background:#17171b;border:1px solid var(--line);border-radius:8px;font-size:12px;font-weight:600;transition:.15s}
+.d-amt:active{border-color:var(--accent)}
+.d-amt.sel{border-color:var(--ok);background:rgba(245,197,24,.1);color:var(--ok)}
+.d-custom{width:100%;background:#17171b;border:1px solid var(--line);border-radius:8px;padding:11px;font-size:13px;color:var(--text);margin-bottom:14px}
+.d-custom:focus{outline:none;border-color:var(--accent)}
+.d-methods{display:flex;flex-direction:column;gap:6px;margin-bottom:16px}
+.d-met{display:flex;align-items:center;gap:10px;padding:11px;background:#17171b;border:1px solid var(--line);border-radius:9px;font-size:12px;font-weight:600;transition:.15s}
+.d-met:active{border-color:var(--accent)}
+.d-met small{display:block;font-size:9px;color:var(--muted);font-weight:400;margin-top:2px}
+.d-actions{display:flex;gap:8px}
+.d-cancel{flex:1;padding:12px;background:#22222a;border-radius:9px;font-weight:600;font-size:12px;transition:.15s}
+.d-cancel:active{background:#2a2a34}
+.d-confirm{flex:2;padding:12px;background:var(--accent);color:#0b0b0d;border-radius:9px;font-weight:650;font-size:12px;transition:.15s}
+.d-confirm:active:not(:disabled){filter:brightness(1.12)}
+.d-confirm:disabled{background:#22222a;color:#55555f;cursor:not-allowed}
+</style>
+</head>
+<body>
+
+<div class="loader" id="loader">
+  <div class="loader-logo">
+    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M12 20V4M5 11l7-7 7 7"/>
+    </svg>
+  </div>
+  <div class="loader-title">upgrader<span class="dot">.ton</span></div>
+  <div class="loader-sub">Загрузка…</div>
+  <div class="loader-bar"><i></i></div>
+</div>
+
+<div class="toast" id="toast">
+  <div class="toast-inner">
+    <div class="toast-ic pending" id="toastIc">⏳</div>
+    <div class="toast-tx">
+      <b id="toastTitle">Обработка платежа</b>
+      <span id="toastSub">Средства будут зачислены в течение нескольких секунд</span>
+    </div>
+    <div class="toast-progress" id="toastProgress"></div>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <header>
+    <div class="brand">
+      <div class="mark">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 20V4M5 11l7-7 7 7"/>
+        </svg>
+      </div>
+      <span>upgrader<span class="dot">.ton</span></span>
+    </div>
+
+    <div class="wallet">
+      <button class="balance" id="walletBtn">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="7" width="18" height="13" rx="2"/>
+          <path d="M16 3h-1a2 2 0 0 0-2 2v2h6V5a2 2 0 0 0-2-2z"/>
+          <circle cx="17" cy="13.5" r="1.5" fill="currentColor"/>
+        </svg>
+        <b id="balance">0.00</b> ₽
+        <svg class="chev" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M6 9l6 6 6-6"/>
+        </svg>
+      </button>
+
+      <div class="popover" id="walletPop">
+        <div class="pop-head">
+          <span class="lbl">Баланс</span>
+          <span class="val" id="popBalance">0.00 ₽</span>
+        </div>
+        <button class="pop-btn" id="openDeposit">Пополнить</button>
+      </div>
+    </div>
+  </header>
+
+  <div class="wheel-section">
+    <div class="wheel-stage">
+      <div class="wheel" id="wheel"></div>
+      <div class="pointer-wrap" id="pointerWrap">
+        <div class="pointer"></div>
+      </div>
+      <div class="wheel-center" id="wheelCenter">
+        <div class="center-view" id="centerView">
+          <div class="wheel-pct"><span id="pct">0.00</span><small>%</small></div>
+          <div class="wheel-sub">шанс успеха</div>
+        </div>
+        <div class="result-view" id="resultView">
+          <div class="result-amount" id="resultAmount"></div>
+          <div class="result-label" id="resultLabel"></div>
+        </div>
+      </div>
+    </div>
+    <button class="go" id="go" disabled>Апгрейд</button>
+    <p class="hint" id="hint"></p>
+  </div>
+
+  <div class="bottom-grid">
+    <div class="section">
+      <div class="section-title">Ставка</div>
+      <input type="number" class="field-input" id="stakeAmount" placeholder="Сумма в ₽" min="1" step="0.01" inputmode="decimal">
+      <div class="current-box" id="currentStake" style="display:none">
+        <div class="label">В игре</div>
+        <div class="value" id="stakeValue">0.00 ₽</div>
+      </div>
+      <button class="quick" id="quickBtn">
+        <div class="q-ic">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M13 2L4.09 12.97a.6.6 0 0 0 .47.97H11l-1 8 8.91-10.97a.6.6 0 0 0-.47-.97H13l1-7z"/>
+          </svg>
+        </div>
+        <div class="q-tx">
+          <div class="q-title">Быстрый апгрейд</div>
+          <div class="q-sub">Стрелка крутится в 3 раза быстрее</div>
+        </div>
+        <div class="q-state" id="quickState">ВЫКЛ</div>
+      </button>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Желаемая сумма</div>
+      <input type="number" class="field-input" id="targetAmount" placeholder="Сколько хочешь получить" min="1" step="0.01" inputmode="decimal">
+      <div class="current-box" id="currentTarget" style="display:none">
+        <div class="label">Цель</div>
+        <div class="value" id="targetValue">0.00 ₽</div>
+      </div>
+      <div class="multipliers" id="multipliers">
+        <button class="mult" data-m="1.1">1.1x</button>
+        <button class="mult" data-m="1.2">1.2x</button>
+        <button class="mult" data-m="1.5">1.5x</button>
+        <button class="mult" data-m="2.0">2.0x</button>
+        <button class="mult" data-m="3.0">3.0x</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="overlay" id="depositModal">
+  <div class="dialog">
+    <div class="d-head">
+      <div class="d-ic">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 5v14M5 12h14"/>
+        </svg>
+      </div>
+      <div>
+        <div class="d-title">Пополнение баланса</div>
+        <div class="d-sub">Выбери сумму и способ оплаты</div>
+      </div>
+    </div>
+
+    <div class="d-body">
+      Средства зачисляются мгновенно. Минимальная сумма пополнения — 50 ₽.
+    </div>
+
+    <div class="d-amounts" id="dAmounts">
+      <button class="d-amt" data-v="500">500 ₽</button>
+      <button class="d-amt" data-v="1000">1 000 ₽</button>
+      <button class="d-amt" data-v="5000">5 000 ₽</button>
+      <button class="d-amt" data-v="10000">10 000 ₽</button>
+      <button class="d-amt" data-v="25000">25 000 ₽</button>
+      <button class="d-amt" data-v="50000">50 000 ₽</button>
+    </div>
+
+    <input type="number" class="d-custom" id="dCustom" placeholder="Своя сумма, ₽" min="50" step="0.01" inputmode="decimal">
+
+    <div class="d-methods">
+      <button class="d-met" data-m="card">💳 Банковская карта <small>Visa, MasterCard, МИР</small></button>
+      <button class="d-met" data-m="sbp">🏦 СБП <small>Перевод по номеру телефона</small></button>
+      <button class="d-met" data-m="crypto">₿ Криптовалюта <small>TON, USDT, BTC</small></button>
+    </div>
+
+    <div class="d-actions">
+      <button class="d-cancel" id="dCancel">Отмена</button>
+      <button class="d-confirm" id="dConfirm" disabled>Пополнить</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const $ = id => document.getElementById(id);
+
+const NORMAL_MS = 5000;
+const FAST_MS = 1700;
+
+let state = { balance:0, stake:0, target:0, fast:false };
+
+let busy = false;
+let currentRotation = 0;
+let resultTimer = null;
+let chosenAmount = 0;
+let chosenMethod = null;
+
+const tg = window.Telegram && window.Telegram.WebApp;
+if (tg) { tg.ready(); tg.expand(); }
+
+window.addEventListener('load', () => {
+  setTimeout(() => {
+    $('loader').classList.add('hide');
+    setTimeout(() => $('loader').style.display = 'none', 500);
+  }, 1400);
+});
+
+function calcChance(stake, target){
+  if (stake === 0 || target === 0) return 0;
+  if (target < stake) return 0;
+  if (target === stake) return 95;
+  const ratio = stake / target;
+  const chance = ratio * 95;
+  return Math.max(0.01, Math.round(chance * 100) / 100);
+}
+
+function renderWheel(chance){
+  const okDeg = chance * 3.6;
+  const darkDeg = 360 - okDeg;
+  const darkHalf = darkDeg / 2;
+  $('wheel').style.setProperty('--ok-deg', okDeg + 'deg');
+  $('wheel').style.setProperty('--dark-half', darkHalf + 'deg');
+  $('pct').textContent = chance.toFixed(2);
+}
+
+function showPctView(){
+  $('centerView').style.display = 'flex';
+  $('resultView').classList.remove('show');
+  $('wheelCenter').classList.remove('win','lose');
+}
+
+function showResultView(ok, target){
+  $('centerView').style.display = 'none';
+  $('resultView').classList.add('show');
+  $('wheelCenter').classList.remove('win','lose');
+  $('wheelCenter').classList.add(ok ? 'win' : 'lose');
+  const el = $('resultAmount');
+  el.classList.remove('win','lose');
+  el.classList.add(ok ? 'win' : 'lose');
+  el.textContent = (ok ? '+' : '−') + target.toFixed(2) + ' ₽';
+  $('resultLabel').textContent = ok ? 'успех' : 'не повезло';
+}
+
+function render(){
+  $('balance').textContent = state.balance.toFixed(2);
+  $('popBalance').textContent = state.balance.toFixed(2) + ' ₽';
+
+  if (state.stake > 0) {
+    $('currentStake').style.display = 'block';
+    $('stakeValue').textContent = state.stake.toFixed(2) + ' ₽';
+  } else $('currentStake').style.display = 'none';
+
+  if (state.target > 0) {
+    $('currentTarget').style.display = 'block';
+    $('targetValue').textContent = state.target.toFixed(2) + ' ₽';
+  } else $('currentTarget').style.display = 'none';
+
+  const chance = calcChance(state.stake, state.target);
+  renderWheel(chance);
+
+  const targetTooSmall = state.target > 0 && state.stake > 0 && state.target < state.stake;
+  const canPlay = state.stake > 0 && state.target > 0 && !targetTooSmall && chance > 0;
+  
+  $('go').disabled = busy || !canPlay;
+  $('go').textContent = busy ? 'Крутится…' : (canPlay ? `Апгрейд · ${state.stake.toFixed(2)}₽` : 'Апгрейд');
+
+  let hint = '';
+  if (targetTooSmall) {
+    hint = 'Желаемая сумма должна быть не меньше ставки';
+  } else if (canPlay) {
+    hint = `Шанс: ${chance.toFixed(2)}% · выигрыш +${(state.target - state.stake).toFixed(2)}₽`;
+  }
+  $('hint').textContent = hint;
+
+  $('quickBtn').classList.toggle('on', state.fast);
+  $('quickState').textContent = state.fast ? 'ВКЛ' : 'ВЫКЛ';
+
+  document.querySelectorAll('.mult').forEach(b => {
+    b.disabled = state.stake === 0;
+  });
+}
+
+function spinPointer(chance, ok){
+  const wrap = $('pointerWrap');
+  const ms = state.fast ? FAST_MS : NORMAL_MS;
+  const okDeg = chance * 3.6;
+  const darkDeg = 360 - okDeg;
+  const darkHalf = darkDeg / 2;
+
+  let finalAngle;
+  if (ok){
+    finalAngle = darkHalf + 10 + Math.random() * Math.max(1, okDeg - 20);
+  } else {
+    if (Math.random() < 0.5){
+      finalAngle = 10 + Math.random() * Math.max(1, darkHalf - 20);
+    } else {
+      finalAngle = 360 - darkHalf + 10 + Math.random() * Math.max(1, darkHalf - 20);
+    }
+  }
+
+  const spins = state.fast ? 3 : 6;
+  const target = currentRotation + spins * 360 + finalAngle;
+
+  wrap.style.transition = 'none';
+  wrap.style.transform = `rotate(${currentRotation}deg)`;
+  void wrap.offsetWidth;
+  wrap.style.transition = `transform ${ms}ms cubic-bezier(.17,.67,.22,1)`;
+  wrap.style.transform = `rotate(${target}deg)`;
+  currentRotation = target % 360;
+
+  return ms;
+}
+
+function applyStake(newStake){
+  state.balance += state.stake;
+  state.stake = newStake;
+  state.balance -= newStake;
+  render();
+}
+
+$('stakeAmount').addEventListener('input', e => {
+  const v = parseFloat(e.target.value);
+  const newStake = (!v || v <= 0) ? 0 : v;
+  if (newStake > state.balance + state.stake) return;
+  applyStake(newStake);
+});
+
+$('targetAmount').addEventListener('input', e => {
+  const v = parseFloat(e.target.value);
+  state.target = (!v || v <= 0) ? 0 : v;
+  render();
+});
+
+$('multipliers').addEventListener('click', e => {
+  const b = e.target.closest('.mult');
+  if (!b || b.disabled || state.stake === 0) return;
+  const m = parseFloat(b.dataset.m);
+  const newTarget = Math.round(state.stake * m * 100) / 100;
+  state.target = newTarget;
+  $('targetAmount').value = newTarget.toFixed(2);
+  render();
+});
+
+$('quickBtn').addEventListener('click', () => {
+  if (busy) return;
+  state.fast = !state.fast;
+  render();
+});
+
+$('walletBtn').addEventListener('click', e => {
+  e.stopPropagation();
+  const open = $('walletPop').classList.toggle('open');
+  $('walletBtn').classList.toggle('open', open);
+});
+
+document.addEventListener('click', e => {
+  if (!e.target.closest('.wallet')) {
+    $('walletPop').classList.remove('open');
+    $('walletBtn').classList.remove('open');
+  }
+});
+
+$('openDeposit').addEventListener('click', () => {
+  $('walletPop').classList.remove('open');
+  $('walletBtn').classList.remove('open');
+  chosenAmount = 0;
+  chosenMethod = null;
+  $('dCustom').value = '';
+  document.querySelectorAll('.d-amt').forEach(b => b.classList.remove('sel'));
+  document.querySelectorAll('.d-met').forEach(b => b.style.borderColor = '');
+  updateConfirm();
+  $('depositModal').classList.add('open');
+});
+
+$('dAmounts').addEventListener('click', e => {
+  const b = e.target.closest('.d-amt');
+  if (!b) return;
+  document.querySelectorAll('.d-amt').forEach(x => x.classList.remove('sel'));
+  b.classList.add('sel');
+  chosenAmount = +b.dataset.v;
+  $('dCustom').value = '';
+  updateConfirm();
+});
+
+$('dCustom').addEventListener('input', e => {
+  const v = parseFloat(e.target.value);
+  chosenAmount = (!v || v < 50) ? 0 : v;
+  document.querySelectorAll('.d-amt').forEach(x => x.classList.remove('sel'));
+  updateConfirm();
+});
+
+document.querySelectorAll('.d-met').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.d-met').forEach(x => x.style.borderColor = '');
+    btn.style.borderColor = 'var(--accent)';
+    chosenMethod = btn.dataset.m;
+    updateConfirm();
+  });
+});
+
+function updateConfirm(){
+  $('dConfirm').disabled = !(chosenAmount >= 50 && chosenMethod);
+  $('dConfirm').textContent = chosenAmount >= 50
+    ? `Пополнить на ${chosenAmount.toFixed(2)} ₽`
+    : 'Пополнить';
+}
+
+function closeDeposit(){ $('depositModal').classList.remove('open'); }
+
+$('dCancel').addEventListener('click', closeDeposit);
+$('depositModal').addEventListener('click', e => { if (e.target === $('depositModal')) closeDeposit(); });
+
+let toastTimer = null;
+function showToast(type, title, sub, duration){
+  const ic = $('toastIc');
+  ic.classList.remove('pending','done','fail');
+  ic.classList.add(type);
+  if (type === 'pending') ic.textContent = '⏳';
+  else if (type === 'done') ic.textContent = '✓';
+  else ic.textContent = '✕';
+  $('toastTitle').textContent = title;
+  $('toastSub').textContent = sub;
+  
+  const progress = $('toastProgress');
+  progress.style.animation = 'none';
+  void progress.offsetWidth;
+  progress.style.animation = `progressShrink ${duration/1000}s linear forwards`;
+  
+  $('toast').classList.add('show');
+  if (toastTimer) clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => {
+    $('toast').classList.remove('show');
+  }, duration);
+}
+
+$('dConfirm').addEventListener('click', () => {
+  if (!chosenAmount || chosenAmount < 50) return;
+  const amount = chosenAmount;
+  closeDeposit();
+
+  showToast('pending', 'Платёж обрабатывается', `Зачислим ${amount.toFixed(2)} ₽ в течение нескольких секунд`, 99999);
+
+  const delay = 5000 + Math.random() * 5000;
+  setTimeout(() => {
+    state.balance += amount;
+    render();
+    showToast('done', 'Баланс пополнен', `+${amount.toFixed(2)} ₽ зачислено`, 3500);
+  }, delay);
+});
+
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeDeposit(); });
+
+$('go').addEventListener('click', () => {
+  if (busy || state.stake === 0 || state.target === 0) return;
+
+  const chance = calcChance(state.stake, state.target);
+  const stake = state.stake;
+  const target = state.target;
+  if (chance === 0) return;
+
+  busy = true;
+  const stakeInput = $('stakeAmount').value;
+  const targetInput = $('targetAmount').value;
+
+  state.stake = 0;
+  state.target = 0;
+
+  const ok = Math.random() * 100 < chance;
+  if (ok) state.balance += target;
+
+  $('go').disabled = true;
+  $('go').textContent = 'Крутится…';
+  showPctView();
+
+  const ms = spinPointer(chance, ok);
+
+  setTimeout(() => {
+    busy = false;
+
+    // Восстанавливаем значения в полях
+    $('stakeAmount').value = stakeInput;
+    $('targetAmount').value = targetInput;
+
+    // Применяем их к state, чтобы кнопка снова стала активной
+    const newStake = parseFloat(stakeInput);
+    const newTarget = parseFloat(targetInput);
+
+    if (newStake > 0 && newStake <= state.balance + state.stake) {
+      applyStake(newStake);
+    }
+    if (newTarget > 0) {
+      state.target = newTarget;
+    }
+
+    showResultView(ok, target);
+    render();
+    resultTimer = setTimeout(showPctView, 3000);
+  }, ms + 100);
+});
+
+showPctView();
+render();
+</script>
+</body>
+</html>
