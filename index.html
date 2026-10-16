@@ -23,18 +23,18 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
 
 .loader{position:fixed;inset:0;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999;transition:opacity .5s}
 .loader.hide{opacity:0;pointer-events:none}
-.loader-logo{width:64px;height:64px;border-radius:16px;background:var(--accent);display:grid;place-items:center;color:#0b0b0d;margin-bottom:20px;animation:logoPulse 1.6s ease-in-out infinite}
-@keyframes logoPulse{0%,100%{transform:scale(1);box-shadow:0 0 0 0 rgba(138,156,255,.4)}50%{transform:scale(1.08);box-shadow:0 0 0 20px rgba(138,156,255,0)}}
-.loader-title{font-size:20px;font-weight:700;letter-spacing:-.5px;margin-bottom:6px}
+.loader-logo{width:72px;height:72px;border-radius:20px;background:linear-gradient(135deg,#8a9cff 0%,#6b7ce0 100%);display:grid;place-items:center;color:#fff;margin-bottom:24px;animation:logoPulse 1.6s ease-in-out infinite;box-shadow:0 10px 40px rgba(138,156,255,.3)}
+@keyframes logoPulse{0%,100%{transform:scale(1);box-shadow:0 10px 40px rgba(138,156,255,.3)}50%{transform:scale(1.06);box-shadow:0 14px 50px rgba(138,156,255,.5)}}
+.loader-title{font-size:22px;font-weight:700;letter-spacing:-.5px;margin-bottom:6px}
 .loader-title .dot{color:var(--muted);font-weight:400}
 .loader-sub{font-size:12px;color:var(--muted);margin-bottom:24px}
 .loader-bar{width:160px;height:3px;background:#1a1a1e;border-radius:3px;overflow:hidden}
-.loader-bar i{display:block;height:100%;width:30%;background:var(--accent);border-radius:3px;animation:barMove 1.4s ease-in-out infinite}
+.loader-bar i{display:block;height:100%;width:30%;background:linear-gradient(90deg,#8a9cff,#f5c518);border-radius:3px;animation:barMove 1.4s ease-in-out infinite}
 @keyframes barMove{0%{transform:translateX(-100%)}100%{transform:translateX(500%)}}
 
 .toast{position:fixed;top:0;left:0;right:0;z-index:200;transform:translateY(-100%);transition:transform .4s cubic-bezier(.2,.9,.3,1.2)}
 .toast.show{transform:translateY(0)}
-.toast-inner{background:linear-gradient(135deg,rgba(19,19,22,.98),rgba(35,35,40,.98));backdrop-filter:blur(20px);border-bottom:1px solid var(--line);padding:16px 20px;display:flex;align-items:center;gap:14px;box-shadow:0 8px 32px rgba(0,0,0,.6);position:relative}
+.toast-inner{background:linear-gradient(135deg,rgba(19,19,22,.98),rgba(35,35,40,.98));backdrop-filter:blur(20px);border-bottom:1px solid var(--line);padding:16px 20px;padding-right:56px;display:flex;align-items:center;gap:14px;box-shadow:0 8px 32px rgba(0,0,0,.6);position:relative}
 .toast-ic{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;flex-shrink:0;font-size:18px;position:relative;overflow:hidden}
 .toast-ic::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,.1),transparent);pointer-events:none}
 .toast-ic.pending{background:linear-gradient(135deg,rgba(245,197,24,.2),rgba(245,197,24,.05));color:var(--ok);box-shadow:0 0 20px rgba(245,197,24,.2)}
@@ -43,15 +43,24 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
 .toast-tx{flex:1}
 .toast-tx b{display:block;font-size:15px;font-weight:700;margin-bottom:3px;letter-spacing:-.3px}
 .toast-tx span{color:var(--muted);font-size:12px;line-height:1.4}
+.toast-close{position:absolute;top:12px;right:12px;width:32px;height:32px;border-radius:8px;background:rgba(255,255,255,.05);display:grid;place-items:center;color:var(--muted);transition:.15s}
+.toast-close:active{background:rgba(255,255,255,.1);color:var(--text)}
 .toast-progress{position:absolute;bottom:0;left:0;height:2px;background:var(--accent);border-radius:2px;animation:progressShrink linear forwards}
 @keyframes progressShrink{from{width:100%}to{width:0%}}
 
 .wrap{width:100%;padding:0 16px 30px}
 
 header{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px 0;border-bottom:1px solid var(--line);margin-bottom:20px}
-.brand{display:flex;align-items:center;gap:8px;font-size:18px;font-weight:700;letter-spacing:-.5px}
+.brand{display:flex;align-items:center;gap:10px;font-size:18px;font-weight:700;letter-spacing:-.5px}
 .brand .dot{color:var(--muted);font-weight:400}
-.mark{width:32px;height:32px;border-radius:8px;background:var(--accent);display:grid;place-items:center;color:#0b0b0d}
+.mark{width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,#8a9cff 0%,#6b7ce0 100%);display:grid;place-items:center;color:#fff;box-shadow:0 4px 14px rgba(138,156,255,.25)}
+
+.header-right{display:flex;align-items:center;gap:8px}
+
+.sound-btn{width:38px;height:38px;border-radius:10px;background:var(--panel);border:1px solid var(--line);display:grid;place-items:center;color:var(--muted);transition:.15s}
+.sound-btn:active{background:#181820;border-color:var(--accent)}
+.sound-btn.on{color:var(--ok);border-color:rgba(34,197,94,.3)}
+.sound-btn.off{color:var(--muted)}
 
 .wallet{position:relative}
 .balance{display:flex;align-items:center;gap:6px;background:var(--panel);border:1px solid var(--line);padding:8px 12px;border-radius:10px;font-size:13px;color:var(--muted);transition:.15s}
@@ -61,13 +70,17 @@ header{display:flex;align-items:center;justify-content:space-between;gap:12px;pa
 .balance .chev{color:var(--muted);transition:transform .2s}
 .balance.open .chev{transform:rotate(180deg)}
 
-.popover{position:absolute;top:calc(100% + 8px);right:0;width:200px;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px;z-index:60;display:none;animation:popIn .2s}
+.popover{position:absolute;top:calc(100% + 8px);right:0;width:220px;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px;z-index:60;display:none;animation:popIn .2s}
 .popover.open{display:block}
 .pop-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:12px}
 .pop-head .lbl{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1px}
 .pop-head .val{font-size:16px;font-weight:700}
-.pop-btn{width:100%;padding:10px;background:var(--accent);color:#0b0b0d;border-radius:8px;font-weight:650;font-size:12px;transition:.15s}
-.pop-btn:active{filter:brightness(1.12)}
+.pop-actions{display:flex;flex-direction:column;gap:8px}
+.pop-btn{width:100%;padding:10px;border-radius:8px;font-weight:650;font-size:12px;transition:.15s;display:flex;align-items:center;justify-content:center;gap:8px}
+.pop-btn.primary{background:var(--accent);color:#0b0b0d}
+.pop-btn.primary:active{filter:brightness(1.12)}
+.pop-btn.secondary{background:#17171b;color:var(--text);border:1px solid var(--line)}
+.pop-btn.secondary:active{border-color:var(--accent)}
 @keyframes popIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
 
 .wheel-section{display:flex;flex-direction:column;align-items:center;gap:16px;padding:20px 0}
@@ -118,17 +131,13 @@ header{display:flex;align-items:center;justify-content:space-between;gap:12px;pa
 .go:disabled{background:#22222a;color:#55555f;cursor:not-allowed}
 .hint{font-size:11px;color:var(--muted);text-align:center;min-height:16px;line-height:1.5}
 
-.bottom-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:10px}
+.sections{display:flex;flex-direction:column;gap:12px;margin-top:10px}
 
 .section{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px}
 .section-title{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:12px}
 
 .field-input{width:100%;background:#17171b;border:1px solid var(--line);border-radius:8px;padding:12px;font-size:15px;color:var(--text)}
 .field-input:focus{outline:none;border-color:var(--accent)}
-
-.current-box{background:#17171b;border:1px solid var(--line);border-radius:10px;padding:12px;margin-top:12px}
-.current-box .label{font-size:10px;color:var(--muted);margin-bottom:4px}
-.current-box .value{font-size:18px;font-weight:700;color:var(--ok)}
 
 .quick{width:100%;display:flex;align-items:center;gap:12px;padding:12px;background:#17171b;border:1px solid var(--line);border-radius:10px;transition:.18s;margin-top:10px;text-align:left}
 .quick:active{border-color:var(--accent)}
@@ -148,10 +157,12 @@ header{display:flex;align-items:center;justify-content:space-between;gap:12px;pa
 
 .overlay{position:fixed;inset:0;background:rgba(0,0,0,.8);backdrop-filter:blur(6px);display:none;align-items:center;justify-content:center;padding:20px;z-index:100}
 .overlay.open{display:flex}
-.dialog{width:100%;max-width:380px;background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:24px;animation:popUp .28s}
+.dialog{width:100%;max-width:380px;background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:24px;animation:popUp .28s;max-height:90vh;overflow-y:auto}
 @keyframes popUp{from{transform:scale(.92);opacity:0}to{transform:scale(1);opacity:1}}
 .d-head{display:flex;align-items:center;gap:10px;margin-bottom:16px}
-.d-ic{width:36px;height:36px;border-radius:10px;background:rgba(245,197,24,.14);display:grid;place-items:center;color:var(--ok);flex-shrink:0}
+.d-ic{width:36px;height:36px;border-radius:10px;display:grid;place-items:center;flex-shrink:0}
+.d-ic.yellow{background:rgba(245,197,24,.14);color:var(--ok)}
+.d-ic.green{background:rgba(34,197,94,.14);color:var(--win)}
 .d-title{font-size:16px;font-weight:700}
 .d-sub{font-size:11px;color:var(--muted);margin-top:2px}
 .d-body{font-size:12px;color:var(--muted);line-height:1.6;margin-bottom:14px}
@@ -162,8 +173,9 @@ header{display:flex;align-items:center;justify-content:space-between;gap:12px;pa
 .d-custom{width:100%;background:#17171b;border:1px solid var(--line);border-radius:8px;padding:11px;font-size:13px;color:var(--text);margin-bottom:14px}
 .d-custom:focus{outline:none;border-color:var(--accent)}
 .d-methods{display:flex;flex-direction:column;gap:6px;margin-bottom:16px}
-.d-met{display:flex;align-items:center;gap:10px;padding:11px;background:#17171b;border:1px solid var(--line);border-radius:9px;font-size:12px;font-weight:600;transition:.15s}
+.d-met{display:flex;align-items:center;gap:10px;padding:11px;background:#17171b;border:1px solid var(--line);border-radius:9px;font-size:12px;font-weight:600;transition:.15s;text-align:left}
 .d-met:active{border-color:var(--accent)}
+.d-met.sel{border-color:var(--accent);background:#1b1e30}
 .d-met small{display:block;font-size:9px;color:var(--muted);font-weight:400;margin-top:2px}
 .d-actions{display:flex;gap:8px}
 .d-cancel{flex:1;padding:12px;background:#22222a;border-radius:9px;font-weight:600;font-size:12px;transition:.15s}
@@ -171,14 +183,23 @@ header{display:flex;align-items:center;justify-content:space-between;gap:12px;pa
 .d-confirm{flex:2;padding:12px;background:var(--accent);color:#0b0b0d;border-radius:9px;font-weight:650;font-size:12px;transition:.15s}
 .d-confirm:active:not(:disabled){filter:brightness(1.12)}
 .d-confirm:disabled{background:#22222a;color:#55555f;cursor:not-allowed}
+.d-confirm.green{background:var(--win)}
+
+.d-info{background:#17171b;border:1px solid var(--line);border-radius:10px;padding:12px;margin-bottom:14px}
+.d-info-row{display:flex;justify-content:space-between;align-items:center;padding:6px 0;font-size:12px}
+.d-info-row:not(:last-child){border-bottom:1px solid var(--line)}
+.d-info-row .lbl{color:var(--muted)}
+.d-info-row .val{font-weight:600}
+.d-info-row .val.warn{color:var(--ok)}
 </style>
 </head>
 <body>
 
 <div class="loader" id="loader">
   <div class="loader-logo">
-    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
-      <path d="M12 20V4M5 11l7-7 7 7"/>
+    <svg width="36" height="36" viewBox="0 0 24 24" fill="none">
+      <path d="M12 2L14.5 9.5L22 12L14.5 14.5L12 22L9.5 14.5L2 12L9.5 9.5L12 2Z" fill="currentColor"/>
+      <circle cx="18" cy="6" r="1.5" fill="#f5c518"/>
     </svg>
   </div>
   <div class="loader-title">upgrader<span class="dot">.ton</span></div>
@@ -193,6 +214,11 @@ header{display:flex;align-items:center;justify-content:space-between;gap:12px;pa
       <b id="toastTitle">Обработка платежа</b>
       <span id="toastSub">Средства будут зачислены в течение нескольких секунд</span>
     </div>
+    <button class="toast-close" id="toastClose" aria-label="Закрыть">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+        <path d="M18 6L6 18M6 6l12 12"/>
+      </svg>
+    </button>
     <div class="toast-progress" id="toastProgress"></div>
   </div>
 </div>
@@ -202,32 +228,62 @@ header{display:flex;align-items:center;justify-content:space-between;gap:12px;pa
   <header>
     <div class="brand">
       <div class="mark">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M12 20V4M5 11l7-7 7 7"/>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+          <path d="M12 2L14.5 9.5L22 12L14.5 14.5L12 22L9.5 14.5L2 12L9.5 9.5L12 2Z" fill="currentColor"/>
+          <circle cx="18" cy="6" r="1.2" fill="#f5c518"/>
         </svg>
       </div>
       <span>upgrader<span class="dot">.ton</span></span>
     </div>
 
-    <div class="wallet">
-      <button class="balance" id="walletBtn">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <rect x="3" y="7" width="18" height="13" rx="2"/>
-          <path d="M16 3h-1a2 2 0 0 0-2 2v2h6V5a2 2 0 0 0-2-2z"/>
-          <circle cx="17" cy="13.5" r="1.5" fill="currentColor"/>
+    <div class="header-right">
+      <button class="sound-btn on" id="soundBtn" aria-label="Звук">
+        <svg id="soundIconOn" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M11 5L6 9H2v6h4l5 4V5z"/>
+          <path d="M15.54 8.46a5 5 0 0 1 0 7.07"/>
+          <path d="M19.07 4.93a10 10 0 0 1 0 14.14"/>
         </svg>
-        <b id="balance">0.00</b> ₽
-        <svg class="chev" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M6 9l6 6 6-6"/>
+        <svg id="soundIconOff" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none">
+          <path d="M11 5L6 9H2v6h4l5 4V5z"/>
+          <line x1="23" y1="9" x2="17" y2="15"/>
+          <line x1="17" y1="9" x2="23" y2="15"/>
         </svg>
       </button>
 
-      <div class="popover" id="walletPop">
-        <div class="pop-head">
-          <span class="lbl">Баланс</span>
-          <span class="val" id="popBalance">0.00 ₽</span>
+      <div class="wallet">
+        <button class="balance" id="walletBtn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="7" width="18" height="13" rx="2"/>
+            <path d="M16 3h-1a2 2 0 0 0-2 2v2h6V5a2 2 0 0 0-2-2z"/>
+            <circle cx="17" cy="13.5" r="1.5" fill="currentColor"/>
+          </svg>
+          <b id="balance">0.00</b> ₽
+          <svg class="chev" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M6 9l6 6 6-6"/>
+          </svg>
+        </button>
+
+        <div class="popover" id="walletPop">
+          <div class="pop-head">
+            <span class="lbl">Баланс</span>
+            <span class="val" id="popBalance">0.00 ₽</span>
+          </div>
+          <div class="pop-actions">
+            <button class="pop-btn primary" id="openDeposit">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 5v14M5 12h14"/>
+              </svg>
+              Пополнить
+            </button>
+            <button class="pop-btn secondary" id="openWithdraw">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M17 8l4 4-4 4"/>
+                <path d="M3 12h18"/>
+              </svg>
+              Вывести
+            </button>
+          </div>
         </div>
-        <button class="pop-btn" id="openDeposit">Пополнить</button>
       </div>
     </div>
   </header>
@@ -253,14 +309,10 @@ header{display:flex;align-items:center;justify-content:space-between;gap:12px;pa
     <p class="hint" id="hint"></p>
   </div>
 
-  <div class="bottom-grid">
+  <div class="sections">
     <div class="section">
       <div class="section-title">Ставка</div>
       <input type="number" class="field-input" id="stakeAmount" placeholder="Сумма в ₽" min="1" step="0.01" inputmode="decimal">
-      <div class="current-box" id="currentStake" style="display:none">
-        <div class="label">В игре</div>
-        <div class="value" id="stakeValue">0.00 ₽</div>
-      </div>
       <button class="quick" id="quickBtn">
         <div class="q-ic">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
@@ -278,10 +330,6 @@ header{display:flex;align-items:center;justify-content:space-between;gap:12px;pa
     <div class="section">
       <div class="section-title">Желаемая сумма</div>
       <input type="number" class="field-input" id="targetAmount" placeholder="Сколько хочешь получить" min="1" step="0.01" inputmode="decimal">
-      <div class="current-box" id="currentTarget" style="display:none">
-        <div class="label">Цель</div>
-        <div class="value" id="targetValue">0.00 ₽</div>
-      </div>
       <div class="multipliers" id="multipliers">
         <button class="mult" data-m="1.1">1.1x</button>
         <button class="mult" data-m="1.2">1.2x</button>
@@ -294,10 +342,11 @@ header{display:flex;align-items:center;justify-content:space-between;gap:12px;pa
 
 </div>
 
+<!-- Модалка пополнения -->
 <div class="overlay" id="depositModal">
   <div class="dialog">
     <div class="d-head">
-      <div class="d-ic">
+      <div class="d-ic yellow">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M12 5v14M5 12h14"/>
         </svg>
@@ -330,8 +379,69 @@ header{display:flex;align-items:center;justify-content:space-between;gap:12px;pa
     </div>
 
     <div class="d-actions">
-      <button class="d-cancel" id="dCancel">Отмена</button>
+      <button class="d-cancel" data-close="depositModal">Отмена</button>
       <button class="d-confirm" id="dConfirm" disabled>Пополнить</button>
+    </div>
+  </div>
+</div>
+
+<!-- Модалка вывода -->
+<div class="overlay" id="withdrawModal">
+  <div class="dialog">
+    <div class="d-head">
+      <div class="d-ic green">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M17 8l4 4-4 4"/>
+          <path d="M3 12h18"/>
+        </svg>
+      </div>
+      <div>
+        <div class="d-title">Вывод средств</div>
+        <div class="d-sub">Выбери сумму и реквизиты</div>
+      </div>
+    </div>
+
+    <div class="d-info">
+      <div class="d-info-row">
+        <span class="lbl">Доступно</span>
+        <span class="val" id="wAvailable">0.00 ₽</span>
+      </div>
+      <div class="d-info-row">
+        <span class="lbl">Мин. сумма</span>
+        <span class="val">100 ₽</span>
+      </div>
+      <div class="d-info-row">
+        <span class="lbl">Комиссия</span>
+        <span class="val warn">0%</span>
+      </div>
+      <div class="d-info-row">
+        <span class="lbl">Время</span>
+        <span class="val">до 15 минут</span>
+      </div>
+    </div>
+
+    <div class="d-amounts" id="wAmounts">
+      <button class="d-amt" data-v="500">500 ₽</button>
+      <button class="d-amt" data-v="1000">1 000 ₽</button>
+      <button class="d-amt" data-v="5000">5 000 ₽</button>
+      <button class="d-amt" data-v="10000">10 000 ₽</button>
+      <button class="d-amt" data-v="25000">25 000 ₽</button>
+      <button class="d-amt" data-v="all">Всё</button>
+    </div>
+
+    <input type="number" class="d-custom" id="wCustom" placeholder="Своя сумма, ₽" min="100" step="0.01" inputmode="decimal">
+
+    <div class="d-methods">
+      <button class="d-met" data-m="card">💳 Банковская карта <small>Номер карты для перевода</small></button>
+      <button class="d-met" data-m="sbp">🏦 СБП <small>Номер телефона получателя</small></button>
+      <button class="d-met" data-m="crypto">₿ Криптовалюта <small>Кошелёк TON/USDT/BTC</small></button>
+    </div>
+
+    <input type="text" class="d-custom" id="wDetails" placeholder="Реквизиты (номер карты / телефона / кошелька)" style="margin-bottom:16px">
+
+    <div class="d-actions">
+      <button class="d-cancel" data-close="withdrawModal">Отмена</button>
+      <button class="d-confirm green" id="wConfirm" disabled>Вывести</button>
     </div>
   </div>
 </div>
@@ -342,13 +452,15 @@ const $ = id => document.getElementById(id);
 const NORMAL_MS = 5000;
 const FAST_MS = 1700;
 
-let state = { balance:0, stake:0, target:0, fast:false };
+let state = { balance:0, fast:false, soundOn:true };
 
 let busy = false;
 let currentRotation = 0;
 let resultTimer = null;
 let chosenAmount = 0;
 let chosenMethod = null;
+let wAmount = 0;
+let wMethod = null;
 
 const tg = window.Telegram && window.Telegram.WebApp;
 if (tg) { tg.ready(); tg.expand(); }
@@ -360,6 +472,81 @@ window.addEventListener('load', () => {
   }, 1400);
 });
 
+/* ===== ЗВУКИ (Web Audio API) ===== */
+let audioCtx = null;
+function initAudio(){
+  if (!audioCtx) {
+    try {
+      audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    } catch(e) {}
+  }
+  if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
+}
+
+function playTone(freq, duration, type='sine', volume=0.15, delay=0){
+  if (!state.soundOn || !audioCtx) return;
+  const t = audioCtx.currentTime + delay;
+  const osc = audioCtx.createOscillator();
+  const gain = audioCtx.createGain();
+  osc.type = type;
+  osc.frequency.setValueAtTime(freq, t);
+  gain.gain.setValueAtTime(0, t);
+  gain.gain.linearRampToValueAtTime(volume, t + 0.01);
+  gain.gain.exponentialRampToValueAtTime(0.001, t + duration);
+  osc.connect(gain);
+  gain.connect(audioCtx.destination);
+  osc.start(t);
+  osc.stop(t + duration);
+}
+
+function sfxClick(){ playTone(800, 0.05, 'square', 0.08); }
+function sfxTick(){ playTone(1200, 0.03, 'sine', 0.06); }
+function sfxWin(){
+  // Восходящий аккорд C-E-G
+  playTone(523.25, 0.15, 'sine', 0.18, 0);      // C5
+  playTone(659.25, 0.15, 'sine', 0.18, 0.08);   // E5
+  playTone(783.99, 0.25, 'sine', 0.2, 0.16);    // G5
+  playTone(1046.5, 0.35, 'triangle', 0.15, 0.28); // C6
+}
+function sfxLose(){
+  // Нисходящий
+  playTone(440, 0.15, 'sawtooth', 0.1, 0);
+  playTone(330, 0.15, 'sawtooth', 0.1, 0.1);
+  playTone(220, 0.3, 'sawtooth', 0.12, 0.2);
+}
+function sfxSpin(){
+  // Серия тиков при старте вращения
+  for (let i = 0; i < 4; i++) {
+    playTone(600 + i * 100, 0.04, 'sine', 0.08, i * 0.08);
+  }
+}
+function sfxSuccess(){
+  playTone(880, 0.1, 'sine', 0.15, 0);
+  playTone(1174.66, 0.15, 'sine', 0.15, 0.08);
+}
+
+// Инициализация аудио по первому клику
+document.addEventListener('click', () => initAudio(), { once: true });
+document.addEventListener('touchstart', () => initAudio(), { once: true });
+
+/* ===== ЗВУК КНОПКА ===== */
+$('soundBtn').addEventListener('click', () => {
+  initAudio();
+  state.soundOn = !state.soundOn;
+  updateSoundBtn();
+  if (state.soundOn) sfxClick();
+});
+
+function updateSoundBtn(){
+  const btn = $('soundBtn');
+  btn.classList.toggle('on', state.soundOn);
+  btn.classList.toggle('off', !state.soundOn);
+  $('soundIconOn').style.display = state.soundOn ? 'block' : 'none';
+  $('soundIconOff').style.display = state.soundOn ? 'none' : 'block';
+}
+updateSoundBtn();
+
+/* ===== ОСНОВНАЯ ЛОГИКА ===== */
 function calcChance(stake, target){
   if (stake === 0 || target === 0) return 0;
   if (target < stake) return 0;
@@ -384,7 +571,7 @@ function showPctView(){
   $('wheelCenter').classList.remove('win','lose');
 }
 
-function showResultView(ok, target){
+function showResultView(ok, stake, target){
   $('centerView').style.display = 'none';
   $('resultView').classList.add('show');
   $('wheelCenter').classList.remove('win','lose');
@@ -392,38 +579,39 @@ function showResultView(ok, target){
   const el = $('resultAmount');
   el.classList.remove('win','lose');
   el.classList.add(ok ? 'win' : 'lose');
-  el.textContent = (ok ? '+' : '−') + target.toFixed(2) + ' ₽';
+  if (ok) {
+    el.textContent = '+' + target.toFixed(2) + ' ₽';
+  } else {
+    el.textContent = '−' + stake.toFixed(2) + ' ₽';
+  }
   $('resultLabel').textContent = ok ? 'успех' : 'не повезло';
 }
 
 function render(){
   $('balance').textContent = state.balance.toFixed(2);
   $('popBalance').textContent = state.balance.toFixed(2) + ' ₽';
+  $('wAvailable').textContent = state.balance.toFixed(2) + ' ₽';
 
-  if (state.stake > 0) {
-    $('currentStake').style.display = 'block';
-    $('stakeValue').textContent = state.stake.toFixed(2) + ' ₽';
-  } else $('currentStake').style.display = 'none';
+  const stakeFromInput = parseFloat($('stakeAmount').value) || 0;
+  const targetFromInput = parseFloat($('targetAmount').value) || 0;
 
-  if (state.target > 0) {
-    $('currentTarget').style.display = 'block';
-    $('targetValue').textContent = state.target.toFixed(2) + ' ₽';
-  } else $('currentTarget').style.display = 'none';
-
-  const chance = calcChance(state.stake, state.target);
+  const chance = calcChance(stakeFromInput, targetFromInput);
   renderWheel(chance);
 
-  const targetTooSmall = state.target > 0 && state.stake > 0 && state.target < state.stake;
-  const canPlay = state.stake > 0 && state.target > 0 && !targetTooSmall && chance > 0;
-  
+  const targetTooSmall = targetFromInput > 0 && stakeFromInput > 0 && targetFromInput < stakeFromInput;
+  const enough = stakeFromInput <= state.balance;
+  const canPlay = stakeFromInput > 0 && targetFromInput > 0 && !targetTooSmall && chance > 0 && enough;
+
   $('go').disabled = busy || !canPlay;
-  $('go').textContent = busy ? 'Крутится…' : (canPlay ? `Апгрейд · ${state.stake.toFixed(2)}₽` : 'Апгрейд');
+  $('go').textContent = busy ? 'Крутится…' : (canPlay ? `Апгрейд · ${stakeFromInput.toFixed(2)}₽` : 'Апгрейд');
 
   let hint = '';
   if (targetTooSmall) {
     hint = 'Желаемая сумма должна быть не меньше ставки';
+  } else if (stakeFromInput > 0 && !enough) {
+    hint = 'Недостаточно средств';
   } else if (canPlay) {
-    hint = `Шанс: ${chance.toFixed(2)}% · выигрыш +${(state.target - state.stake).toFixed(2)}₽`;
+    hint = `Шанс: ${chance.toFixed(2)}% · чистая прибыль +${(targetFromInput - stakeFromInput).toFixed(2)}₽`;
   }
   $('hint').textContent = hint;
 
@@ -431,7 +619,7 @@ function render(){
   $('quickState').textContent = state.fast ? 'ВКЛ' : 'ВЫКЛ';
 
   document.querySelectorAll('.mult').forEach(b => {
-    b.disabled = state.stake === 0;
+    b.disabled = stakeFromInput === 0;
   });
 }
 
@@ -444,66 +632,61 @@ function spinPointer(chance, ok){
 
   let finalAngle;
   if (ok){
-    finalAngle = darkHalf + 10 + Math.random() * Math.max(1, okDeg - 20);
+    const margin = Math.min(10, okDeg / 4);
+    finalAngle = darkHalf + margin + Math.random() * Math.max(0.1, okDeg - 2 * margin);
   } else {
     if (Math.random() < 0.5){
-      finalAngle = 10 + Math.random() * Math.max(1, darkHalf - 20);
+      const margin = Math.min(10, darkHalf / 4);
+      finalAngle = margin + Math.random() * Math.max(0.1, darkHalf - 2 * margin);
     } else {
-      finalAngle = 360 - darkHalf + 10 + Math.random() * Math.max(1, darkHalf - 20);
+      const margin = Math.min(10, darkHalf / 4);
+      finalAngle = 360 - darkHalf + margin + Math.random() * Math.max(0.1, darkHalf - 2 * margin);
     }
   }
 
+  const currentMod = ((currentRotation % 360) + 360) % 360;
+  let delta = finalAngle - currentMod;
+  if (delta < 0) delta += 360;
+
   const spins = state.fast ? 3 : 6;
-  const target = currentRotation + spins * 360 + finalAngle;
+  const target = currentRotation + spins * 360 + delta;
 
   wrap.style.transition = 'none';
   wrap.style.transform = `rotate(${currentRotation}deg)`;
   void wrap.offsetWidth;
   wrap.style.transition = `transform ${ms}ms cubic-bezier(.17,.67,.22,1)`;
   wrap.style.transform = `rotate(${target}deg)`;
-  currentRotation = target % 360;
+  currentRotation = target;
 
   return ms;
 }
 
-function applyStake(newStake){
-  state.balance += state.stake;
-  state.stake = newStake;
-  state.balance -= newStake;
-  render();
-}
-
-$('stakeAmount').addEventListener('input', e => {
-  const v = parseFloat(e.target.value);
-  const newStake = (!v || v <= 0) ? 0 : v;
-  if (newStake > state.balance + state.stake) return;
-  applyStake(newStake);
-});
-
-$('targetAmount').addEventListener('input', e => {
-  const v = parseFloat(e.target.value);
-  state.target = (!v || v <= 0) ? 0 : v;
-  render();
-});
+$('stakeAmount').addEventListener('input', () => { sfxTick(); render(); });
+$('targetAmount').addEventListener('input', () => { sfxTick(); render(); });
 
 $('multipliers').addEventListener('click', e => {
   const b = e.target.closest('.mult');
-  if (!b || b.disabled || state.stake === 0) return;
+  if (!b || b.disabled) return;
+  sfxClick();
+  const stakeFromInput = parseFloat($('stakeAmount').value) || 0;
+  if (stakeFromInput === 0) return;
   const m = parseFloat(b.dataset.m);
-  const newTarget = Math.round(state.stake * m * 100) / 100;
-  state.target = newTarget;
+  const newTarget = Math.round(stakeFromInput * m * 100) / 100;
   $('targetAmount').value = newTarget.toFixed(2);
   render();
 });
 
 $('quickBtn').addEventListener('click', () => {
   if (busy) return;
+  sfxClick();
   state.fast = !state.fast;
   render();
 });
 
+/* ===== КОШЕЛЁК ===== */
 $('walletBtn').addEventListener('click', e => {
   e.stopPropagation();
+  sfxClick();
   const open = $('walletPop').classList.toggle('open');
   $('walletBtn').classList.toggle('open', open);
 });
@@ -515,57 +698,175 @@ document.addEventListener('click', e => {
   }
 });
 
-$('openDeposit').addEventListener('click', () => {
+/* ===== ПОПОЛНЕНИЕ ===== */
+function openDepositModal(){
   $('walletPop').classList.remove('open');
   $('walletBtn').classList.remove('open');
   chosenAmount = 0;
   chosenMethod = null;
   $('dCustom').value = '';
-  document.querySelectorAll('.d-amt').forEach(b => b.classList.remove('sel'));
-  document.querySelectorAll('.d-met').forEach(b => b.style.borderColor = '');
-  updateConfirm();
+  document.querySelectorAll('#dAmounts .d-amt').forEach(b => b.classList.remove('sel'));
+  document.querySelectorAll('#depositModal .d-met').forEach(b => b.classList.remove('sel'));
+  updateDepositConfirm();
   $('depositModal').classList.add('open');
-});
+}
+
+$('openDeposit').addEventListener('click', () => { sfxClick(); openDepositModal(); });
 
 $('dAmounts').addEventListener('click', e => {
   const b = e.target.closest('.d-amt');
   if (!b) return;
-  document.querySelectorAll('.d-amt').forEach(x => x.classList.remove('sel'));
+  sfxClick();
+  document.querySelectorAll('#dAmounts .d-amt').forEach(x => x.classList.remove('sel'));
   b.classList.add('sel');
   chosenAmount = +b.dataset.v;
   $('dCustom').value = '';
-  updateConfirm();
+  updateDepositConfirm();
 });
 
 $('dCustom').addEventListener('input', e => {
   const v = parseFloat(e.target.value);
   chosenAmount = (!v || v < 50) ? 0 : v;
-  document.querySelectorAll('.d-amt').forEach(x => x.classList.remove('sel'));
-  updateConfirm();
+  document.querySelectorAll('#dAmounts .d-amt').forEach(x => x.classList.remove('sel'));
+  updateDepositConfirm();
 });
 
-document.querySelectorAll('.d-met').forEach(btn => {
+document.querySelectorAll('#depositModal .d-met').forEach(btn => {
   btn.addEventListener('click', () => {
-    document.querySelectorAll('.d-met').forEach(x => x.style.borderColor = '');
-    btn.style.borderColor = 'var(--accent)';
+    sfxClick();
+    document.querySelectorAll('#depositModal .d-met').forEach(x => x.classList.remove('sel'));
+    btn.classList.add('sel');
     chosenMethod = btn.dataset.m;
-    updateConfirm();
+    updateDepositConfirm();
   });
 });
 
-function updateConfirm(){
+function updateDepositConfirm(){
   $('dConfirm').disabled = !(chosenAmount >= 50 && chosenMethod);
   $('dConfirm').textContent = chosenAmount >= 50
-    ? `Пополнить на ${chosenAmount.toFixed(2)} ₽`
+    ? `Пополнить на ${chosenAmount.toLocaleString('ru-RU')} ₽`
     : 'Пополнить';
 }
 
-function closeDeposit(){ $('depositModal').classList.remove('open'); }
+$('dConfirm').addEventListener('click', () => {
+  if (!chosenAmount || chosenAmount < 50) return;
+  sfxClick();
+  const amount = chosenAmount;
+  $('depositModal').classList.remove('open');
 
-$('dCancel').addEventListener('click', closeDeposit);
-$('depositModal').addEventListener('click', e => { if (e.target === $('depositModal')) closeDeposit(); });
+  showToast('pending', 'Платёж обрабатывается', `Зачислим ${amount.toLocaleString('ru-RU')} ₽ в течение нескольких секунд`, 99999);
 
+  const delay = 5000 + Math.random() * 5000;
+  setTimeout(() => {
+    state.balance += amount;
+    render();
+    sfxSuccess();
+    showToast('done', 'Баланс пополнен', `+${amount.toLocaleString('ru-RU')} ₽ зачислено`, 3500);
+  }, delay);
+});
+
+/* ===== ВЫВОД ===== */
+function openWithdrawModal(){
+  $('walletPop').classList.remove('open');
+  $('walletBtn').classList.remove('open');
+  wAmount = 0;
+  wMethod = null;
+  $('wCustom').value = '';
+  $('wDetails').value = '';
+  document.querySelectorAll('#wAmounts .d-amt').forEach(b => b.classList.remove('sel'));
+  document.querySelectorAll('#withdrawModal .d-met').forEach(b => b.classList.remove('sel'));
+  updateWithdrawConfirm();
+  $('withdrawModal').classList.add('open');
+}
+
+$('openWithdraw').addEventListener('click', () => { sfxClick(); openWithdrawModal(); });
+
+$('wAmounts').addEventListener('click', e => {
+  const b = e.target.closest('.d-amt');
+  if (!b) return;
+  sfxClick();
+  document.querySelectorAll('#wAmounts .d-amt').forEach(x => x.classList.remove('sel'));
+  b.classList.add('sel');
+  if (b.dataset.v === 'all') {
+    wAmount = state.balance;
+    $('wCustom').value = state.balance > 0 ? state.balance.toFixed(2) : '';
+  } else {
+    wAmount = +b.dataset.v;
+    $('wCustom').value = '';
+  }
+  updateWithdrawConfirm();
+});
+
+$('wCustom').addEventListener('input', e => {
+  const v = parseFloat(e.target.value);
+  wAmount = (!v || v < 100) ? 0 : v;
+  document.querySelectorAll('#wAmounts .d-amt').forEach(x => x.classList.remove('sel'));
+  updateWithdrawConfirm();
+});
+
+document.querySelectorAll('#withdrawModal .d-met').forEach(btn => {
+  btn.addEventListener('click', () => {
+    sfxClick();
+    document.querySelectorAll('#withdrawModal .d-met').forEach(x => x.classList.remove('sel'));
+    btn.classList.add('sel');
+    wMethod = btn.dataset.m;
+    updateWithdrawConfirm();
+  });
+});
+
+function updateWithdrawConfirm(){
+  const details = $('wDetails').value.trim();
+  const valid = wAmount >= 100 && wAmount <= state.balance && wMethod && details.length >= 4;
+  $('wConfirm').disabled = !valid;
+  $('wConfirm').textContent = wAmount >= 100
+    ? `Вывести ${wAmount.toLocaleString('ru-RU')} ₽`
+    : 'Вывести';
+}
+
+$('wDetails').addEventListener('input', updateWithdrawConfirm);
+
+$('wConfirm').addEventListener('click', () => {
+  if (!wAmount || wAmount < 100 || wAmount > state.balance || !wMethod) return;
+  sfxClick();
+  const amount = wAmount;
+  const method = wMethod;
+  // Сразу списываем сумму
+  state.balance -= amount;
+  render();
+  $('withdrawModal').classList.remove('open');
+
+  const methodName = method === 'card' ? 'на карту' : method === 'sbp' ? 'через СБП' : 'в крипте';
+
+  showToast('pending', 'Заявка принята', `Вывод ${amount.toLocaleString('ru-RU')} ₽ ${methodName}. Ожидайте до 15 минут`, 99999);
+
+  // Через 5-10 сек — подтверждение вывода
+  const delay = 5000 + Math.random() * 5000;
+  setTimeout(() => {
+    sfxSuccess();
+    showToast('done', 'Вывод выполнен', `${amount.toLocaleString('ru-RU')} ₽ отправлены ${methodName}`, 4000);
+  }, delay);
+});
+
+/* ===== ЗАКРЫТИЕ МОДАЛОК ===== */
+document.querySelectorAll('[data-close]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    sfxClick();
+    $(btn.dataset.close).classList.remove('open');
+  });
+});
+
+['depositModal', 'withdrawModal'].forEach(id => {
+  $(id).addEventListener('click', e => {
+    if (e.target === $(id)) { sfxClick(); $(id).classList.remove('open'); }
+  });
+});
+
+/* ===== TOAST ===== */
 let toastTimer = null;
+function hideToast(){
+  $('toast').classList.remove('show');
+  if (toastTimer) { clearTimeout(toastTimer); toastTimer = null; }
+}
 function showToast(type, title, sub, duration){
   const ic = $('toastIc');
   ic.classList.remove('pending','done','fail');
@@ -575,85 +876,77 @@ function showToast(type, title, sub, duration){
   else ic.textContent = '✕';
   $('toastTitle').textContent = title;
   $('toastSub').textContent = sub;
-  
+
   const progress = $('toastProgress');
   progress.style.animation = 'none';
   void progress.offsetWidth;
   progress.style.animation = `progressShrink ${duration/1000}s linear forwards`;
-  
+
   $('toast').classList.add('show');
   if (toastTimer) clearTimeout(toastTimer);
   toastTimer = setTimeout(() => {
     $('toast').classList.remove('show');
+    toastTimer = null;
   }, duration);
 }
 
-$('dConfirm').addEventListener('click', () => {
-  if (!chosenAmount || chosenAmount < 50) return;
-  const amount = chosenAmount;
-  closeDeposit();
+$('toastClose').addEventListener('click', () => { sfxClick(); hideToast(); });
 
-  showToast('pending', 'Платёж обрабатывается', `Зачислим ${amount.toFixed(2)} ₽ в течение нескольких секунд`, 99999);
-
-  const delay = 5000 + Math.random() * 5000;
-  setTimeout(() => {
-    state.balance += amount;
-    render();
-    showToast('done', 'Баланс пополнен', `+${amount.toFixed(2)} ₽ зачислено`, 3500);
-  }, delay);
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') {
+    $('depositModal').classList.remove('open');
+    $('withdrawModal').classList.remove('open');
+  }
 });
 
-document.addEventListener('keydown', e => { if (e.key === 'Escape') closeDeposit(); });
-
+/* ===== АПГРЕЙД ===== */
 $('go').addEventListener('click', () => {
-  if (busy || state.stake === 0 || state.target === 0) return;
+  const stake = parseFloat($('stakeAmount').value) || 0;
+  const target = parseFloat($('targetAmount').value) || 0;
 
-  const chance = calcChance(state.stake, state.target);
-  const stake = state.stake;
-  const target = state.target;
+  if (busy || stake === 0 || target === 0) return;
+  if (stake > state.balance) return;
+
+  const chance = calcChance(stake, target);
   if (chance === 0) return;
 
-  busy = true;
-  const stakeInput = $('stakeAmount').value;
-  const targetInput = $('targetAmount').value;
-
-  state.stake = 0;
-  state.target = 0;
-
   const ok = Math.random() * 100 < chance;
-  if (ok) state.balance += target;
 
+  // Сразу списываем ставку
+  state.balance -= stake;
+  render();
+
+  busy = true;
   $('go').disabled = true;
   $('go').textContent = 'Крутится…';
   showPctView();
 
+  if (resultTimer) { clearTimeout(resultTimer); resultTimer = null; }
+
+  sfxSpin();
   const ms = spinPointer(chance, ok);
 
   setTimeout(() => {
-    busy = false;
-
-    // Восстанавливаем значения в полях
-    $('stakeAmount').value = stakeInput;
-    $('targetAmount').value = targetInput;
-
-    // Применяем их к state, чтобы кнопка снова стала активной
-    const newStake = parseFloat(stakeInput);
-    const newTarget = parseFloat(targetInput);
-
-    if (newStake > 0 && newStake <= state.balance + state.stake) {
-      applyStake(newStake);
-    }
-    if (newTarget > 0) {
-      state.target = newTarget;
+    if (ok) {
+      state.balance += target;
+      sfxWin();
+    } else {
+      sfxLose();
     }
 
-    showResultView(ok, target);
+    showResultView(ok, stake, target);
     render();
-    resultTimer = setTimeout(showPctView, 3000);
+
+    busy = false;
+    render();
+
+    resultTimer = setTimeout(() => {
+      showPctView();
+      resultTimer = null;
+    }, 3000);
   }, ms + 100);
 });
 
-showPctView();
 render();
 </script>
 </body>
